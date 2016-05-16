@@ -10,7 +10,6 @@ function readFile(filename) {
                 reject(error);
             }
             else {
-                console.log("In read file function data = " + data);
                 resolve(data);
             }
         });
@@ -19,7 +18,7 @@ function readFile(filename) {
 }
 function writeFile(filename, data){
     return new Promise((resolve, reject) => {
-        fs.writeFile(filename, data, (error, data)=>{
+        fs.writeFile(filename, data, (error) => {
             if(error){
                 reject(error);
             }
@@ -38,25 +37,18 @@ function readAndWriteFiles(input_filename1, input_filename2, output_filename){
     var input_promise1 = readFile(input_filename1);
     var input_promise2 = readFile(input_filename2);
 
-    Promise.all(input_promise1, input_promise2)
+    Promise.all([input_promise1, input_promise2])
         .then(function(contents){
-            var data = input_promise1 + input_promise2;
+            var data = contents[0] + " " + contents[1];
             return writeFile(output_filename, data);
+        })
+        .then(function(written_data){
+            console.log("concatenated data has been written to file successfully");
+            return written_data;
+        })
+        .catch(function(err){
+            console.log("Cannot read and combine file together..., error" + JSON.stringify(err));
         });
-    
-        // .reject(function(err){
-        //     //wrrap it
-        //     return Promise.reject(err);
-        // })
-        // .then(function(written_data){
-        //     console.log("concatenated data has been written to file successfully");
-        //     //You can return it to other if require here.
-        // })
-        // .catch(function(err){
-        //     console.log("Cannot read and combine file together..., error" + JSON.stringify(err));
-        //     //You can return it to other if require here.
-        // })
 }
 readAndWriteFiles("file1.txt", "file2.txt", "file3.txt");
-
 module.exports = readAndWriteFiles;

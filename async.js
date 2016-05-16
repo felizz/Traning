@@ -16,7 +16,7 @@ function readFileParallel(input_filename_1, input_filename_2, out_filename){
             //FIXME - this is not an efficient way to concatenating string because it
             var data = results[0] + results[1];
 
-            fs.writeFile(out_filename, data,()=>{
+            fs.writeFile(out_filename, data, () => {
                 console.log("File " + out_filename + " saved!")
             });
         }
