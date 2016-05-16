@@ -1,0 +1,53 @@
+1. Begin with mock object in unit tests
+
+    Easy to understand why use mock objects
+    https://en.wikipedia.org/wiki/Mock_object#Use_in_test-driven_development
+
+    Mock object is not real objects. If your code have some dependences with some heavy modules, you shoul mock
+        these dependences to run your own code.
+
+    In javascript, you include your dependences by "require", so in Jest, it automatically mocks your dependences
+        with "require" statement. So if you want to use your real object, put jest.unmock(modulename) first.
+
+2. The way jest works:
+
+    a typical directory:
+        //run command line here :npm install / then npm test
+        node_modules
+        __tests__
+        __mocks__
+        files.js
+        package.json
+
+    node_modules : contains dependences for all directory
+    files.js is actual module you write
+    file package.json: contains   "devDependencies": {
+                                    "jest-cli": "*"
+                                  },
+                                  "scripts": {
+                                    "test": "jest"
+                                  }
+    __tests__ folder contains file-test.js which is test for module you write
+    when you run "npm test", jest will run all file in __tests__ directory
+
+    When a manual mock exists for a given module (__mocks__ directory), Jest's module system will just use that
+        instead of trying to automatically generate a mock.
+
+        Introduction to manual mocks
+        https://facebook.github.io/jest/docs/manual-mocks.html#content
+
+3. How to use jest to write async fucntion.
+
+    *) Mock async function you use in your code
+    *) Usually async function have a callback parameter,
+        to test this function calling right parameter, put jasmine.any(Function) into .toBeCalledWith()
+
+    *) use done() to wait for an asyntask complete like this
+        it("message", (done) => {
+            someAsynTasks();
+            done();
+
+
+        });
+
+4. Write your own mock function and data
