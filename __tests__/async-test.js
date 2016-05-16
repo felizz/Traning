@@ -22,12 +22,13 @@ describe("async.js - readFileParallel ", () => {
         var fs = require("fs");
         var readFileParallel = require("../async")
 
-        readFileParallel("../file1.txt", "../file2.txt", "../file3.txt");
-        done();
+        readFileParallel("../files/input1.txt", "../files/input2.txt", "..files/output.txt");
 
+        done();
 
         expect(fs.readFile).toBeCalledWith("../fafds", jasmine.any(Function));
 //        expect(fs.readFile.mock.instances[0]).toEqual("world");
+
    });
 
 

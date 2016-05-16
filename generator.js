@@ -21,6 +21,32 @@ function createFile(filename){
     });
     return;
 }
+
+function createFileUsingPromise(filename){
+    return new Promise((resolve, reject) => {
+        count += 1;
+        fs.writeFile(filename, count, (error) => {
+            if (error) {
+                console.log("cannot write file, " + filename + "error : " + error);
+                reject(error);
+            }
+            else {
+                resolve(filename);
+            }
+        });var file_names = ['files/file1.txt', 'files/file2.txt', 'files/file3.txt',
+                'files/file4.txt', 'files/file5.txt', 'files/file6.txt',
+                'files/file7.txt', 'files/file8.txt', 'files/file9.txt',
+                'files/file10.txt'
+                ];
+
+
+        console.log("done " + filename);
+    });
+}
+
+
+
+
 var file_names = ['files/file1.txt', 'files/file2.txt', 'files/file3.txt',
                 'files/file4.txt', 'files/file5.txt', 'files/file6.txt',
                 'files/file7.txt', 'files/file8.txt', 'files/file9.txt',
@@ -34,6 +60,11 @@ function* fileNameGenerator(){
     }
 }
 for (var file_name of fileNameGenerator()) {
-    createFile(file_name);
+    promises.push(createFileUsingPromise(file_name));
  }
+
+Promise.all(promises)
+    .then((datas)=>{
+        console.log(datas[0] + " "+ datas[9]);
+    })
 
