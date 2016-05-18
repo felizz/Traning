@@ -50,5 +50,6 @@ function readAndWriteFiles(input_filename1, input_filename2, output_filename){
             console.log("Cannot read and combine file together..., error" + JSON.stringify(err));
         });
 }
-readAndWriteFiles("file1.txt", "file2.txt", "file3.txt");
-module.exports = readAndWriteFiles;
+
+
+module.exports = readFile;

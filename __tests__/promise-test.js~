@@ -1,0 +1,41 @@
+/**
+ * Created by vuvantu on 17/05/2016.
+ */
+jest.unmock("../promise");
+jest.mock ("fs");
+
+
+/**
+ * If it block expects a parameter then it will treat the test as an async test.
+ * It will provide a done function to your test, and in return your test is required to call done() to tell
+ * that the test is complete
+ */
+
+describe("promise.js - readFile ", () => {
+    var simulated_readFile_result = {
+        "file1.txt": "hello",
+        "file2.txt": "world"
+    };
+    var promise = require("promise");
+
+
+    it("If file not found, output an error", (done) => {
+        var fs = require("fs");
+        // fs.readFile = function (filename, cb) {
+        //     var data = simulated_readFile_result.file_name;
+        //     if (data) {
+        //         cb(null, data);
+        //     }
+        //     else {
+        //         cb("file not found", data);
+        //     }
+        // }
+
+        promise.readFile("file.txt").catch(function onRejected(error) {
+            expect(error).toEqual("file not found");
+            done();
+        });
+    });
+
+});
+
