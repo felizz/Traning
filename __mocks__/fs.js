@@ -9,6 +9,7 @@ var files = {
 
 mocked_fs.readFile = function (filename, cb) {
 
+
     var data = files[filename];
 
     if (data === undefined) {
@@ -16,7 +17,12 @@ mocked_fs.readFile = function (filename, cb) {
     } else {
         cb(null, data);
     }
-    
+
 };
+
+mocked_fs.writeFile = function(filename, data, cb){
+
+    cb(null, data);
+}
 
 module.exports = mocked_fs;

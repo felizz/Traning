@@ -18,7 +18,6 @@ describe("readFileParallel.js - readFileParallel", () => {
 
         readFileParallel("file.txt", "file2.txt", "file3.txt", (error, data) => {
 
-
                 expect(error).toEqual("file not found");
         });
 

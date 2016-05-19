@@ -5,6 +5,7 @@ var fs = require("fs");
 
 function readFile(filename) {
     return new Promise( (resolve,reject) => {
+
         fs.readFile(filename, (error, data)=>{
             if(error){
                 reject(error);
@@ -18,38 +19,44 @@ function readFile(filename) {
 }
 function writeFile(filename, data){
     return new Promise((resolve, reject) => {
+        
         fs.writeFile(filename, data, (error) => {
             if(error){
                 reject(error);
             }
             else {
-                console.log("In write file function success");
                 resolve(data);
             }
         })
     });
 }
 
-
+/**
+ *
+ * @param input_filename1
+ * @param input_filename2
+ * @param output_filename
+ *
+ * @return promise
+ */
 
 function readAndWriteFiles(input_filename1, input_filename2, output_filename){
 
-    var input_promise1 = readFile(input_filename1);
-    var input_promise2 = readFile(input_filename2);
-
-    Promise.all([input_promise1, input_promise2])
-        .then(function(contents){
-            var data = contents[0] + " " + contents[1];
+    return Promise.all(
+            [
+                readFile(input_filename1),
+                readFile(input_filename2)
+            ]
+        )
+        .then((contents) => {
+            
+            var data = contents[0] + contents[1];
             return writeFile(output_filename, data);
+
         })
-        .then(function(written_data){
-            console.log("concatenated data has been written to file successfully");
-            return written_data;
-        })
-        .catch(function(err){
-            console.log("Cannot read and combine file together..., error" + JSON.stringify(err));
+        .catch((error) => {
+            return Promise.reject(error);
         });
 }
 
-
-module.exports = readFile;
+module.exports = readAndWriteFiles;
