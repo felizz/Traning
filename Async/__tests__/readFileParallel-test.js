@@ -39,7 +39,7 @@ describe("readFileParallel.js - readFileParallel", () => {
 
         readFileParallel("file1.txt", "file2.txt", "file3.txt", (error, data) => {
 
-                expect(data).toEqual("helloworld");
+                expect( data ).toEqual( ["hello","world"] );
         });
 
     });

@@ -39,7 +39,7 @@ function readFileParallel(input_filename_1, input_filename_2, out_filename, cb){
                     }
                 });
 
-                cb(err, data);
+                cb(err, results);
             }
         }
     );
