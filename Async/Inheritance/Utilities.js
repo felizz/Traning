@@ -8,7 +8,6 @@ var fs = require("fs");
 class Utilities {
 
     readFile (filename) {
-        console.log("Object this using readFile is : " + JSON.stringify(this) );
         return new Promise( (resolve,reject) => {
 
             fs.readFile(filename, (error, data)=>{
@@ -69,22 +68,25 @@ class Utilities {
 
 class InheritancedUtilities extends Utilities {
 
-    readAndWriteFiles(input_filename1, input_filename2, output_filename) {
-        return super.readAndWriteFiles(input_filename1, input_filename2, output_filename)
-            .then(
-                (data) => {
-                    return Promise.resolve(data.toUpperCase());
-                },
-                (error) => {
-                    return Promise.reject(error);
+    readFile (filename) {
+        return new Promise( (resolve,reject) => {
+
+            fs.readFile(filename, (error, data)=>{
+                if(error){
+                    reject(error);
                 }
-            );
-    };
+                else {
+                    resolve(data.toString().toUpperCase());
+                }
+            });
+
+        }
+        );
+    }
 
     getFirstCharacters (filename, num) {
-        console.log("Begin getFirstCharacters");
 
-        return this.readFile(filename)
+        return super.readFile(filename)
                .then(
                    (data) => {
                        if(data.length < num ){
