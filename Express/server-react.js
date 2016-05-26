@@ -15,7 +15,17 @@ localhost:3000 default to load index.html in public folder
  */
 app.set('port', (process.env.PORT || 3000));
 
+app.post('/getFile', (req, res) => {
 
+    console.log("get a post request");
+
+
+    console.log(req.body.key_filename);
+
+    console.log("filename requested = " );
+
+    res.send("Sth read " + Date.now());
+});
 
 
 

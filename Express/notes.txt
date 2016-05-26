@@ -1,0 +1,5 @@
+1. For testing React, integrate babel first
+
+2. react dont use () => {}, use function(){}
+
+3. Why use className = "" in render function
