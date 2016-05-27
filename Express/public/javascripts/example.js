@@ -17,15 +17,18 @@ var ReadFileForm = React.createClass({
     handleSubmit : function (event) {
         event.preventDefault();
 
-        var filename = this.state.filename;
+        var filename = this.state.filename.trim();
 
-        var request = {key_filename : filename};
+        if(! filename) {
+            return ;
+        }
 
-        this.props.handleReadFile(request);
+        this.props.handleReadFile( filename );
+
 
     },
     handleFilenameChange : function (event){
-        this.setState({filename : event.target.value.toUpperCase()})
+        this.setState({filename : event.target.value})
     },
     render : function() {
        return (
@@ -42,7 +45,7 @@ var ReadFileForm = React.createClass({
                 />
                 <input
                     type="submit"
-                    value="GET"
+                    value="GET FILE CONTENT"
                 />
             </form>
        )
@@ -69,18 +72,27 @@ var ReadFile = React.createClass({
        return {state_file_name : "", state_file_content : "nothing"};
     },
 
-    handleRequest : function (request) {
+    handleRequest : function (filename) {
+
+        var request = {file: filename};
 
         $.ajax({
             url: this.props.url,
-            dataType : 'json',
-            type: 'POST',
+            type: 'GET',
             data: request,
+
             success: function (data) {
-                this.setState({state_file_content: data});
+                this.setState( {state_file_content : data} );
+            
             }.bind(this),
+
             error: function (xhr, status, err) {
+
                 console.error(this.props.url, status, err.toString());
+                var err_str = this.props.url +  " Status : " + status + " Error + " + err.toString();
+
+                this.setState({state_file_content : err_str});
+
             }.bind(this)
 
         });

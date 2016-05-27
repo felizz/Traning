@@ -1,62 +1,39 @@
-/**
- * Created by vuvantu on 23/05/2016.
- */
-
 var fs = require('fs');
 var path = require('path');
 var express = require('express');
 var bodyParser = require('body-parser');
-
 var app = express();
 
-app.use('/', express.static(path.join(__dirname, 'public')));
-/*
-localhost:3000 default to load index.html in public folder
- */
+
 app.set('port', (process.env.PORT || 3000));
 
-app.post('/getFile', (req, res) => {
-
-    console.log("get a post request");
+app.use('/', express.static(path.join(__dirname, 'public')));
 
 
-    console.log(req.body.key_filename);
+app.get('/getFile', function(req, res) {
 
-    console.log("filename requested = " );
+    console.log("Get a get request");
+    console.log(req.query.file);
 
-    res.send("Sth read " + Date.now());
+    var filepath = req.query.file;
+
+
+    fs.readFile(filepath, (error, data) => {
+        if(error){
+           res.send("Such no file or directory");
+        }
+        else {
+            res.send(data);
+        }
+        console.log("Data sent");
+
+    })
+
+
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
 app.listen(app.get('port'), function() {
     console.log('Server started: http://localhost:' + app.get('port') + '/');
 });
-
