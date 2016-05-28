@@ -11,60 +11,68 @@
 var fs = require("fs");
 
 var count = 0;
-function createFile(filename){
-    count += 1;
-    fs.writeFile(filename, count, (error) => {
-        if(error){
-            console.log("cannot write file, " + filename + "error : " + error);
-        }
-        console.log("done " + filename);
-    });
-    return;
-}
 
 function createFileUsingPromise(filename){
+    console.log("Creating file: " + filename);
     return new Promise((resolve, reject) => {
         count += 1;
         fs.writeFile(filename, count, (error) => {
             if (error) {
-                console.log("cannot write file, " + filename + "error : " + error);
+                console.log("Failed to create file: " + filename + ". Error : " + error);
                 reject(error);
             }
             else {
                 resolve(filename);
+                console.log("Created file: " + filename);
             }
-        });var file_names = ['files/file1.txt', 'files/file2.txt', 'files/file3.txt',
-                'files/file4.txt', 'files/file5.txt', 'files/file6.txt',
-                'files/file7.txt', 'files/file8.txt', 'files/file9.txt',
-                'files/file10.txt'
-                ];
-
-
-        console.log("done " + filename);
+        });
     });
 }
 
+function* fileNameGenerator(prefix){
 
+    try {
+        for (var i=0; i < 11; i++) {
+            var file_name = 'files/' + prefix + i + '.txt';
+            console.log("In generator function:Return a value (" + file_name + ") and pause until next value is asked for.i.e. asynchronously");
 
+            // 1. This will alow us to do asynchronous things inside our existing control flow structures,
+            // such as loops, conditionals and try/catch blocks (in fact, doing asynchronous work at each of the yield keywords)
+            // 2. Generators do not do is give us a way of representing the result of an asynchronous operation. for that, we need promise.
+            var value = yield file_name;
+            console.log("In generator function: Successfully come back with value " + JSON.stringify(value));
+        }
 
-var file_names = ['files/file1.txt', 'files/file2.txt', 'files/file3.txt',
-                'files/file4.txt', 'files/file5.txt', 'files/file6.txt',
-                'files/file7.txt', 'files/file8.txt', 'files/file9.txt',
-                'files/file10.txt'
-                ];
-var promises = [];
-function* fileNameGenerator(){
-    for (var i=0; i < file_names.length; i++) {
-        console.log("yield and push out " + file_names[i]);
-        yield file_names[i];
+    } catch (ex){
+        console.log("In generator function: Unsuccessfully come back with value " + JSON.stringify(ex));
     }
 }
-for (var file_name of fileNameGenerator()) {
+
+var promises = [];
+for (var file_name of fileNameGenerator("generated_by_loop")) {
     promises.push(createFileUsingPromise(file_name));
- }
+}
+
+//Only generate 5 files then stop because of having errors.
+var iterator = fileNameGenerator("generated_by_next");
+var cnt = 0;
+while(true){
+    var res = (cnt++ < 5) ?
+        iterator.next("fulfilling_come_back")
+        :
+        iterator.throw("rejecting_come_back");
+    if(res.done){
+        //When it's done, we receive no value.
+        break;
+    } else {
+        promises.push(createFileUsingPromise(res.value));
+    }
+}
+
+console.log("I should be mix in Created file comments");
 
 Promise.all(promises)
     .then((datas)=>{
-        console.log(datas[0] + " "+ datas[9]);
+        console.log("Generated " + datas.length + " files :" + datas[0] + "-" + datas[datas.length - 1]);
     })
 
