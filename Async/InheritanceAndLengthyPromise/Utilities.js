@@ -109,12 +109,19 @@ class Extension extends Base {
 
 var utils = new Extension();
 
-utils.getFirstCharacters("../files/file3.txt", 20).then(
-    (data) => {
+utils.getFirstCharacters("../files/file1.txt", 20).then(
+    data => {
         console.log("getFirstCharacters (inheritance) - Data returned: " + data);
+        return Promise.resolve(data);
+    }
+).then(
+    data => utils.writeFile("../files/file10.txt", data + "abc")
+).then(
+    data => {
+        console.log("First characters after beng append has been written successfully to file: " + JSON.stringify(data));
     }
 ).catch(
-    (error) => {
+    error => {
         console.log("getFirstCharacters (inheritance) - Error: " + error);
     }
 );
