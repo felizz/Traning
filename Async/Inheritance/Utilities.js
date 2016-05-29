@@ -5,13 +5,13 @@
 
 var fs = require("fs");
 
-class Utilities {
+class Base {
 
-    readFile (filename) {
-        return new Promise( (resolve,reject) => {
+    readFile(filename) {
+        return new Promise((resolve, reject) => {
 
-            fs.readFile(filename, (error, data)=>{
-                if(error){
+            fs.readFile(filename, (error, data)=> {
+                if (error) {
                     reject(error);
                 }
                 else {
@@ -19,13 +19,14 @@ class Utilities {
                 }
             });
 
-        } );
+        });
     }
-    writeFile  (filename, data){
+
+    writeFile(filename, data) {
         return new Promise((resolve, reject) => {
 
             fs.writeFile(filename, data, (error) => {
-                if(error){
+                if (error) {
                     reject(error);
                 }
                 else {
@@ -44,14 +45,14 @@ class Utilities {
      * @return promise
      */
 
-    readAndWriteFiles    (input_filename1, input_filename2, output_filename) {
+    readAndWriteFiles(input_filename1, input_filename2, output_filename) {
 
         return Promise.all(
             [
                 this.readFile(input_filename1),
                 this.readFile(input_filename2)
             ]
-        )
+            )
             .then((contents) => {
 
                 var data = contents[0] + contents[1];
@@ -66,53 +67,54 @@ class Utilities {
 }
 
 
-class InheritancedUtilities extends Utilities {
+class Extension extends Base {
 
-    readFile (filename) {
-        return new Promise( (resolve,reject) => {
+    //Overriding
+    readFile(filename) {
+        return new Promise((resolve, reject) => {
 
-            fs.readFile(filename, (error, data)=>{
-                if(error){
-                    reject(error);
-                }
-                else {
-                    resolve(data.toString().toUpperCase());
-                }
-            });
+                fs.readFile(filename, (error, data)=> {
+                    if (error) {
+                        reject(error);
+                    }
+                    else {
+                        resolve(data.toString().toUpperCase());
+                    }
+                });
 
-        }
+            }
         );
     }
 
-    getFirstCharacters (filename, num) {
+    //Inherit
+    getFirstCharacters(filename, num) {
 
         return super.readFile(filename)
-               .then(
-                   (data) => {
-                       if(data.length < num ){
-                           return Promise.resolve(data);
-                       }
-                       else {
-                           return Promise.resolve(data.slice(0,num));
-                       }
-                   },
-                   (error) => {
-                        return Promise.resolve(error);
-                   }
-               );
+            .then(
+                (data) => {
+                    if (data.length < num) {
+                        return Promise.resolve(data);
+                    }
+                    else {
+                        return Promise.resolve(data.slice(0, num));
+                    }
+                },
+                (error) => {
+                    return Promise.reject(error);
+                }
+            );
     }
 
 }
 
-var utils = new InheritancedUtilities();
+var utils = new Extension();
 
-var result_promise = utils.getFirstCharacters("../files/file1.txt", 20);
-
-result_promise.then(
+utils.getFirstCharacters("../files/file3.txt", 20).then(
     (data) => {
-        console.log("Data returned = " + data);
-    },
+        console.log("getFirstCharacters (inheritance) - Data returned: " + data);
+    }
+).catch(
     (error) => {
-        console.log("Error throwed = " + error);
+        console.log("getFirstCharacters (inheritance) - Error: " + error);
     }
 );
